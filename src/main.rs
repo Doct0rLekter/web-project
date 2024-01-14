@@ -1,14 +1,13 @@
-use axum::Router;
-use std::net::SocketAddr;
+use axum::{response::IntoResponse, routing::get, Router};
 
-#[tokio::main]
-async fn main() {
-    let app = Router::new();
+#[shuttle_runtime::main]
+async fn shuttle() -> shuttle_axum::ShuttleAxum {
+    let app = Router::new().route("/", get(hello_world));
 
-    let address = SocketAddr::new([0,0,0,0].into(), 3000);
+    Ok(app.into())
+    
+}
 
-    axum::Server::bind(&address)
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+async fn hello_world() -> impl IntoResponse {
+    "Hello world"
 }
